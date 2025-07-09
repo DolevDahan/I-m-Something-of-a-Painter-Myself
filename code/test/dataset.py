@@ -59,3 +59,27 @@ class OneFolderTestDataset(data.Dataset):
             "A_paths": path,
             "B_paths": path,
         }
+
+
+
+
+class SimpleDataLoader:
+    def __init__(self, dataloader, dataset, opt):
+        self.dataloader = dataloader
+        self.dataset    = dataset
+        self.opt        = opt
+
+    # מאפשר len(dataset)
+    def __len__(self):
+        return min(len(self.dataset), self.opt.max_dataset_size)
+
+    # מאפשר for batch in dataset:
+    def __iter__(self):
+        for i, data in enumerate(self.dataloader):
+            if i * self.opt.batch_size >= self.opt.max_dataset_size:
+                break
+            yield data
+
+    # אופציונלית – כמו במקור:
+    def set_epoch(self, epoch):
+        self.dataset.current_epoch = epoch

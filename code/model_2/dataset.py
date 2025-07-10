@@ -174,34 +174,48 @@ class SimpleDataLoader:
 
 
 
-def plot_seeds_two_figures(histories, save_dir="./plots"):
-    os.makedirs(save_dir, exist_ok=True)
 
-    for seed, hist in histories.items():
-        epochs = list(range(1, len(hist['D']) + 1))
-        plt.figure(figsize=(6, 4))
-        plt.plot(epochs, hist['G'], label='Generator Loss', color='blue', linewidth=2)
-        plt.plot(epochs, hist['D'], label='Discriminator Loss', color='red', linewidth=2)
-        plt.title(f'Generator vs Discriminator Loss (Seed: {seed})')
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
-        plt.savefig(os.path.join(save_dir, f'G_D_losses_seed_{seed}.png'))
-        plt.show()
+def plot_seeds_two_figures(histories):
+    seeds = list(histories.keys())
+    n_seeds = len(seeds)
 
-        plt.figure(figsize=(6, 4))
-        plt.plot(epochs, hist['GAN'], label='GAN Loss', color='blue', linewidth=2)
-        plt.plot(epochs, hist['NCE'], label='NCE Loss', color='red', linewidth=2)
-        plt.title(f'GAN vs NCE Loss (Seed: {seed})')
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
-        plt.savefig(os.path.join(save_dir, f'GAN_NCE_losses_seed_{seed}.png'))
-        plt.show()
+    # --------- Figure 1: Generator vs Discriminator Loss ---------
+    fig1, axs1 = plt.subplots(1, n_seeds, figsize=(5 * n_seeds, 4))
+    if n_seeds == 1:
+        axs1 = [axs1]
+
+    for col, seed in enumerate(seeds):
+        hist = histories[seed]
+        epochs = list(range(1, len(hist['G']) + 1))
+        axs1[col].plot(epochs, hist['G'], label='Generator Loss', color='blue', linewidth=2)
+        axs1[col].plot(epochs, hist['D'], label='Discriminator Loss', color='red', linewidth=2)
+        axs1[col].set_title(f'G vs D Loss (Seed {seed})')
+        axs1[col].set_xlabel('Epoch')
+        axs1[col].set_ylabel('Loss')
+        axs1[col].legend()
+        axs1[col].grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+    # --------- Figure 2: GAN vs NCE Loss ---------
+    fig2, axs2 = plt.subplots(1, n_seeds, figsize=(5 * n_seeds, 4))
+    if n_seeds == 1:
+        axs2 = [axs2]
+
+    for col, seed in enumerate(seeds):
+        hist = histories[seed]
+        epochs = list(range(1, len(hist['GAN']) + 1))
+        axs2[col].plot(epochs, hist['GAN'], label='GAN Loss', color='blue', linewidth=2)
+        axs2[col].plot(epochs, hist['NCE'], label='NCE Loss', color='green', linewidth=2)
+        axs2[col].set_title(f'GAN vs NCE Loss (Seed {seed})')
+        axs2[col].set_xlabel('Epoch')
+        axs2[col].set_ylabel('Loss')
+        axs2[col].legend()
+        axs2[col].grid(True)
+
+    plt.tight_layout()
+    plt.show()
         
 def load_history(json_path):
     with open(json_path, 'r') as f:

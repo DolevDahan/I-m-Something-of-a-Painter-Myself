@@ -3,7 +3,7 @@ from PIL import Image
 import torch.utils.data as data
 import torchvision.transforms as T
 from argparse import Namespace
-
+import matplotlib.pyplot as plt
 
 _IMG_EXT = (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff")
 def is_image_file(name):
@@ -170,3 +170,35 @@ class SimpleDataLoader:
 
     def set_epoch(self, epoch):
         self.dataset.current_epoch = epoch
+
+
+
+
+def plot_seeds_two_figures(histories, save_dir="./plots"):
+    os.makedirs(save_dir, exist_ok=True)
+
+    for seed, hist in histories.items():
+        epochs = list(range(1, len(hist['D']) + 1))
+        plt.figure(figsize=(6, 4))
+        plt.plot(epochs, hist['G'], label='Generator Loss', color='blue', linewidth=2)
+        plt.plot(epochs, hist['D'], label='Discriminator Loss', color='red', linewidth=2)
+        plt.title(f'Generator vs Discriminator Loss (Seed: {seed})')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_dir, f'G_D_losses_seed_{seed}.png'))
+        plt.show()
+
+        plt.figure(figsize=(6, 4))
+        plt.plot(epochs, hist['GAN'], label='GAN Loss', color='blue', linewidth=2)
+        plt.plot(epochs, hist['NCE'], label='NCE Loss', color='red', linewidth=2)
+        plt.title(f'GAN vs NCE Loss (Seed: {seed})')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_dir, f'GAN_NCE_losses_seed_{seed}.png'))
+        plt.show()

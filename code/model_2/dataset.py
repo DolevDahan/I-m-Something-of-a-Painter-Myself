@@ -202,3 +202,8 @@ def plot_seeds_two_figures(histories, save_dir="./plots"):
         plt.tight_layout()
         plt.savefig(os.path.join(save_dir, f'GAN_NCE_losses_seed_{seed}.png'))
         plt.show()
+        
+def load_history(json_path):
+    with open(json_path, 'r') as f:
+        history = json.load(f)
+    return history

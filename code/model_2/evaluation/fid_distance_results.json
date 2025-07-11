@@ -1,0 +1,32 @@
+[
+    {
+        "Seed": "Seed 42",
+        "FID": 76.7119,
+        "Distance": 0.2547,
+        "Distance after threshold": 1.0
+    },
+    {
+        "Seed": "Seed 123",
+        "FID": 81.8987,
+        "Distance": 0.2571,
+        "Distance after threshold": 1.0
+    },
+    {
+        "Seed": "Seed 2025",
+        "FID": 76.7354,
+        "Distance": 0.2547,
+        "Distance after threshold": 1.0
+    },
+    {
+        "Seed": "Mean",
+        "FID": 78.4487,
+        "Distance": 0.2555,
+        "Distance after threshold": 1.0
+    },
+    {
+        "Seed": "Std",
+        "FID": 2.9878,
+        "Distance": 0.0014,
+        "Distance after threshold": 0.0
+    }
+]

@@ -10,6 +10,7 @@ import warnings
 from tqdm import tqdm
 from PIL import Image
 import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 
 class KernelEvalException(Exception):

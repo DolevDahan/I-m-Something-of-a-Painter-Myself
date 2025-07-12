@@ -105,16 +105,16 @@ class MinimalCUTModel(BaseModel):
             self.model_names = ['G', 'F', 'D']
         else:
             self.model_names = ['G']
-        print("\n===== Model Architectures =====")
-        print("\n--- Generator (netG) ---")
-        print(self.netG)
+        # print("\n===== Model Architectures =====")
+        # print("\n--- Generator (netG) ---")
+        # print(self.netG)
 
-        print("\n--- Feature Network (netF) ---")
-        print(self.netF)
+        # print("\n--- Feature Network (netF) ---")
+        # print(self.netF)
 
-        if self.isTrain:
-            print("\n--- Discriminator (netD) ---")
-            print(self.netD)
+        # if self.isTrain:
+            # print("\n--- Discriminator (netD) ---")
+            # print(self.netD)
     # ---------------------------------------------------------
     #  set_input → forward
     # ---------------------------------------------------------

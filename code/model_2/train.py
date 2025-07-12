@@ -33,28 +33,14 @@ def set_global_seed(seed: int):
 
 
 def seed_worker(worker_id: int):
-    """
-    מקצה seed שונה לכל DataLoader worker, אבל דטרמיניסטי.
-    """
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
     torch.manual_seed(worker_seed)
 
-
-# ───────────────────────────────────────────────
-# 2)  פונקציית האימון הראשית
-# ───────────────────────────────────────────────
 def train(opt):
-    """
-    מפעיל ריצת CUT/GAN מלאה על-פי ההגדרות שב-opt (Namespace).
-    שומר היסטוריית איבודים לקובץ *.json בתוך checkpoints_dir.
-    """
-    # 2.1  קביעת seed ו-Generator
     set_global_seed(opt.seed)
     g = torch.Generator().manual_seed(opt.seed)
-
-    # 2.2  Data-loading
     dataset_inst = UnalignedDataset(opt)
     print(f"dataset [{type(dataset_inst).__name__}] was created")
 
@@ -136,27 +122,3 @@ def train(opt):
     with open(hist_path, "w") as f:
         json.dump(hist, f, indent=2)
     print(f"[INFO] saved full loss history → {hist_path.resolve()}")
-
-
-# ───────────────────────────────────────────────
-# 3)  הרצה ישירה מה-CLI (אופציונלי)
-#     python train.py config.py
-#     כאשר config.py מגדיר משתנה בשם TrainOpt
-# ───────────────────────────────────────────────
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage:  python train.py <path_to_config_py>")
-        sys.exit(1)
-
-    cfg_path = Path(sys.argv[1]).resolve()
-    if not cfg_path.is_file():
-        print(f"Config file not found: {cfg_path}")
-        sys.exit(1)
-
-    cfg_dir = cfg_path.parent
-    if cfg_dir not in sys.path:
-        sys.path.insert(0, str(cfg_dir))
-
-    cfg_module = cfg_path.stem
-    TrainOpt   = __import__(cfg_module).TrainOpt  # הקובץ חייב להכיל TrainOpt אחד בלבד
-    train(TrainOpt)

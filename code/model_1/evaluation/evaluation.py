@@ -31,14 +31,12 @@ model_params = {
 
 def create_model_graph(pth):
     """Creates a graph from saved GraphDef file."""
-    # Creates graph from saved graph_def.pb.
     with tf.gfile.FastGFile( pth, 'rb') as f:
         graph_def = tf.GraphDef()
         graph_def.ParseFromString( f.read())
         _ = tf.import_graph_def( graph_def, name='Pretrained_Net')
 
 def _get_model_layer(sess, model_name):
-    # layername = 'Pretrained_Net/final_layer/Mean:0'
     layername = model_params[model_name]['output_layer']
     layer = sess.graph.get_tensor_by_name(layername)
     ops = layer.graph.get_operations()
@@ -140,7 +138,6 @@ def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
 
     diff = mu1 - mu2
 
-    # product might be almost singular
     covmean, _ = linalg.sqrtm(sigma1.dot(sigma2), disp=False)
     if not np.isfinite(covmean).all():
         msg = "fid calculation produces singular product; adding %s to diagonal of cov estimates" % eps
@@ -148,7 +145,6 @@ def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
         offset = np.eye(sigma1.shape[0]) * eps
         covmean = linalg.sqrtm((sigma1 + offset).dot(sigma2 + offset))
 
-    # numerical error might give slight imaginary component
     if np.iscomplexobj(covmean):
         if not np.allclose(np.diagonal(covmean).imag, 0, atol=1e-3):
             m = np.max(np.abs(covmean.imag))
@@ -186,13 +182,12 @@ def _handle_path_memorization(path, sess, model_name, is_checksize, is_check_png
     files = list(path.glob('*.jpg')) + list(path.glob('*.png'))
     imsize = model_params[model_name]['imsize']
 
-    # In production we don't resize input images. This is just for demo purpose.
     x = np.array([np.array(img_read_checks(fn, imsize, is_checksize, imsize, is_check_png)) for fn in files])
     m, s, features = calculate_activation_statistics(x, sess, model_name)
-    del x #clean up memory
+    del x 
     return m, s, features
 
-# check for image size
+
 def img_read_checks(filename, resize_to, is_checksize=False, check_imsize = 256, is_check_png = False):
     im = Image.open(str(filename))
     if is_checksize and im.size != (check_imsize,check_imsize):

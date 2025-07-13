@@ -10,9 +10,6 @@ import torch
 import torch.utils.data as data
 import matplotlib.pyplot as plt  # נדרש ל-matplotlib גם אם לא מציירים בפועל
 
-# ───────────────────────────────────────────────
-# 0)  נתיבים פנימיים – עדכון לפי מבנה הפרויקט שלך
-# ───────────────────────────────────────────────
 PROJECT_DIR = Path(__file__).resolve().parent / "I-m-Something-of-a-Painter-Myself" / "code" / "model_2"
 if PROJECT_DIR not in sys.path:
     sys.path.insert(0, str(PROJECT_DIR))
@@ -21,9 +18,6 @@ from dataset              import UnalignedDataset, SimpleDataLoader
 from main_model_networks  import build_model
 
 
-# ───────────────────────────────────────────────
-# 1)  כלי עזר ל-seed קבוע
-# ───────────────────────────────────────────────
 def set_global_seed(seed: int):
     random.seed(seed)
     np.random.seed(seed)
@@ -60,10 +54,9 @@ def train(opt):
     dataset_size = len(dataset)
     print(f"The number of training images = {dataset_size}")
 
-    # 2.3  Model
+
     model = build_model(opt)
 
-    # 2.4  לוג-אובייקט
     hist = {'D': [], 'G': [], 'GAN': [], 'NCE': []}
     total_iters = 0
 
@@ -71,7 +64,6 @@ def train(opt):
     pprint(vars(opt))
     print('----OPT----\n')
 
-    # 2.5  לולאת אפוקים
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):
         epoch_start_time = time.time()
         epoch_iter       = 0
@@ -82,7 +74,6 @@ def train(opt):
             if opt.gpu_ids:
                 torch.cuda.synchronize()
 
-            # init netF + optimizers על הבָּץ' הראשון של האפוק הראשון
             if epoch == opt.epoch_count and i == 0:
                 model.data_dependent_initialize(data_i)
                 model.setup(opt)
@@ -90,7 +81,6 @@ def train(opt):
             model.set_input(data_i)
             model.optimize_parameters()
 
-            # צבירת סטטיסטיקות
             losses = model.get_current_losses()
             batch_size = data_i["A"].size(0)
             model.accumulate_epoch_stats(losses, batch_size)
@@ -98,12 +88,11 @@ def train(opt):
             total_iters += batch_size
             epoch_iter  += batch_size
 
-            # שמירה לפי save_latest_freq (באינטרוולים של איטרציות)
+
             if total_iters % opt.save_latest_freq == 0:
                 tag = 'latest' if not opt.save_by_iter else f'iter_{total_iters}'
                 model.save_networks(tag)
 
-        # סוף אפוק – הדפסה ושמירות לפי save_epoch_freq
         model.print_epoch_stats(epoch)
         es = model.epoch_stats
         n  = max(1, es['samples'])

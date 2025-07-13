@@ -15,11 +15,9 @@ def load_trained_generator(opt, ckpt_path, device='cpu'):
     Returns:
         torch.nn.Module: The loaded generator model in eval mode.
     """
-    # Ensure evaluation mode and CPU usage unless specified otherwise
     opt.isTrain = False
     opt.gpu_ids = []
 
-    # Build the model and load the generator weights
     model = build_model(opt)
     state_dict = torch.load(ckpt_path, map_location=device)
     model.netG.load_state_dict(state_dict)

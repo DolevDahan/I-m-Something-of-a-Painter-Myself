@@ -4,20 +4,13 @@ import torch
 import networks
 from patchNCE import PatchNCELoss
 import os
-# -------------------------------------------------------------
-# 1)  בסיס מינימלי
-# -------------------------------------------------------------
-# ─────────────────────────────────────────────────────────────
-# 1)  בסיס מינימלי
-# -------------------------------------------------------------
-import random, numpy as np           # ← הוספנו
+import random, numpy as np   
 import torch, networks, os
 from patchNCE import PatchNCELoss
 
 class BaseModel:
     """BaseModel מצומצם – רק מה שצריך לאימון."""
     def __init__(self, opt):
-        # ── NEW: reproducibility ────────────────────────────
         if hasattr(opt, "seed") and opt.seed is not None:
             random.seed(opt.seed)
             np.random.seed(opt.seed)
@@ -39,7 +32,6 @@ class BaseModel:
         self.optimizers, self.image_paths = [], []
 
 
-    # קפיאת/שחרור גרדיאנטים
     @staticmethod
     def set_requires_grad(nets, flag=False):
         if not isinstance(nets, (list, tuple)):
@@ -48,21 +40,17 @@ class BaseModel:
             for p in net.parameters():
                 p.requires_grad = flag
 
-    # לוגינג
     def get_current_losses(self):
         return {k: float(getattr(self, "loss_" + k)) for k in self.loss_names}
 
     def get_current_visuals(self):
         return {k: getattr(self, k) for k in self.visual_names}
 
-# -------------------------------------------------------------
-# 2)  MinimalCUTModel
-# -------------------------------------------------------------
 class MinimalCUTModel(BaseModel):
     def __init__(self, opt):
         super().__init__(opt)
 
-        # לוגינג
+
         self.loss_names   = ['G_GAN', 'D_real', 'D_fake', 'G', 'NCE']
         self.visual_names = ['real_A', 'fake_B', 'real_B']
         self.nce_layers   = [int(i) for i in opt.nce_layers.split(',')]
@@ -70,7 +58,6 @@ class MinimalCUTModel(BaseModel):
             self.loss_names.append('NCE_Y')
             self.visual_names.append('idt_B')
 
-        # ---------- רשתות ----------
         self.netG = networks.define_G(
             opt.input_nc, opt.output_nc, opt.ngf,
             opt.netG, opt.normG, not opt.no_dropout,
@@ -91,11 +78,9 @@ class MinimalCUTModel(BaseModel):
                 opt.no_antialias, self.gpu_ids, opt
             )
 
-            # קריטריונים
             self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
             self.criterionNCE = [PatchNCELoss(opt).to(self.device) for _ in self.nce_layers]
 
-            # אופטימייזרים ל-G ו-D (F יוּצר מאוחר יותר)
             self.optimizer_G = torch.optim.Adam(
                 self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, opt.beta2)
             )
@@ -107,19 +92,7 @@ class MinimalCUTModel(BaseModel):
             self.model_names = ['G', 'F', 'D']
         else:
             self.model_names = ['G']
-        # print("\n===== Model Architectures =====")
-        # print("\n--- Generator (netG) ---")
-        # print(self.netG)
 
-        # print("\n--- Feature Network (netF) ---")
-        # print(self.netF)
-
-        # if self.isTrain:
-            # print("\n--- Discriminator (netD) ---")
-            # print(self.netD)
-    # ---------------------------------------------------------
-    #  set_input → forward
-    # ---------------------------------------------------------
     def set_input(self, data):
         AtoB = (self.opt.direction == 'AtoB')
         self.real_A      = data['A' if AtoB else 'B'].to(self.device)
@@ -127,7 +100,7 @@ class MinimalCUTModel(BaseModel):
         self.image_paths = data['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
-        # הכנסת שני הדומיינים יחד אם nce_idt
+ 
         self.real = torch.cat((self.real_A, self.real_B), 0) \
                     if (self.opt.nce_idt and self.isTrain) else self.real_A
 
@@ -142,9 +115,7 @@ class MinimalCUTModel(BaseModel):
         if self.opt.nce_idt:
             self.idt_B = self.fake[self.real_A.size(0):]
 
-    # ---------------------------------------------------------
-    #  Losses
-    # ---------------------------------------------------------
+
     def compute_D_loss(self):
         pred_fake       = self.netD(self.fake_B.detach())
         self.loss_D_fake = self.criterionGAN(pred_fake, False).mean()
@@ -187,20 +158,17 @@ class MinimalCUTModel(BaseModel):
         self.loss_G = self.loss_G_GAN + nce_total
         return self.loss_G
 
-    # ---------------------------------------------------------
-    #  Data-dependent init – יוצר optimizer_F אחרי forward ראשון
-    # ---------------------------------------------------------
+
     def data_dependent_initialize(self, data):
         """מופעל על הבָּץ' הראשון – בונה את MLP-ים של netF ויוצר optimizer_F"""
         self.set_input(data)
         self.forward()                            # 1) pass ראשוני
 
         if self.isTrain:
-            # 2) & 3) – מריצים איבודי־אובדן פעם אחת, מפעילים netF מבפנים
+
             self.compute_D_loss().backward()
             self.compute_G_loss().backward()
 
-            # 4) – כעת ל-netF יש פרמטרים אמיתיים
             if self.opt.netF == 'mlp_sample' and not hasattr(self, 'optimizer_F'):
                 self.optimizer_F = torch.optim.Adam(
                     self.netF.parameters(), lr=self.opt.lr,
@@ -250,7 +218,7 @@ class MinimalCUTModel(BaseModel):
     def save_networks(self, epoch_label):
         """Save all the networks to disk."""
         save_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name)
-        os.makedirs(save_dir, exist_ok=True)  # ← הוספנו שורה זו
+        os.makedirs(save_dir, exist_ok=True) 
 
         for name in self.model_names:
             if isinstance(name, str):
@@ -264,7 +232,7 @@ class MinimalCUTModel(BaseModel):
     def update_learning_rate(self):
         """Update learning rates (for linear lr_policy only)."""
         for scheduler in self.schedulers:
-            scheduler.step()  # linear schedule doesn't need metrics
+            scheduler.step() 
         lr = self.optimizers[0].param_groups[0]['lr']
         print(f'learning rate = {lr:.7f}')
 
@@ -307,13 +275,11 @@ class MinimalCUTModel(BaseModel):
     def optimize_parameters(self):
         self.forward()
 
-        # --- עדכון D ---
         self.set_requires_grad(self.netD, True)
         self.optimizer_D.zero_grad()
         self.compute_D_loss().backward()
         self.optimizer_D.step()
 
-        # --- עדכון G (ו-F אם כבר קיים) ---
         self.set_requires_grad(self.netD, False)
         self.optimizer_G.zero_grad()
         if hasattr(self, 'optimizer_F'):
@@ -328,21 +294,17 @@ class MinimalCUTModel(BaseModel):
     def test(self):
         """Forward pass בזמן בדיקה (ללא גרדיאנטים)"""
         self.forward()
-        self.compute_visuals()      # כאן ריק – וזה מספיק
+        self.compute_visuals()  
 
-    # ---------- Visuals ----------
     def compute_visuals(self):
         """במקור מיועד לבנות ויזואליזציות; כאן אינו נדרש."""
         pass
 
-    # ---------- Paths ----------
     def get_image_paths(self):
         """ה-DataLoader מעביר paths ב-set_input, כאן רק מחזירים אותם"""
         return self.image_paths
 
-# -------------------------------------------------------------
-# 3)  build_model – מחזיר מופע מוכן
-# -------------------------------------------------------------
+
 def build_model(opt):
     model = MinimalCUTModel(opt)
     print(f"model [{model.__class__.__name__}] was created")

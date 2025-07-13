@@ -181,7 +181,6 @@ def plot_seeds_two_figures(histories):
     seeds = list(histories.keys())
     n_seeds = len(seeds)
 
-    # --------- Figure 1: Generator vs Discriminator Loss ---------
     fig1, axs1 = plt.subplots(1, n_seeds, figsize=(5 * n_seeds, 4))
     if n_seeds == 1:
         axs1 = [axs1]
@@ -200,7 +199,6 @@ def plot_seeds_two_figures(histories):
     plt.tight_layout()
     plt.show()
 
-    # --------- Figure 2: GAN vs NCE Loss ---------
     fig2, axs2 = plt.subplots(1, n_seeds, figsize=(5 * n_seeds, 4))
     if n_seeds == 1:
         axs2 = [axs2]

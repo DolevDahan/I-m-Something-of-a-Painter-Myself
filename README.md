@@ -37,7 +37,9 @@ focused on unpaired image translation from photographs to Monet-style paintings.
 <div align="center">
   <img src="images/datasetMONET_PHOTO.jpg" alt="Dataset Overview" width="600"/>
 </div>
+
 ---
+
 ## 📌 Project Overview
 
 ### 🎯 Objective

@@ -1,4 +1,5 @@
-# train.py
+#Dolev Dahan
+#Ronel Davidov
 import sys, time, json, random, os
 from pathlib import Path
 from math import inf

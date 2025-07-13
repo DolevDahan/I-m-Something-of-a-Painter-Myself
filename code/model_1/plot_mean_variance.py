@@ -1,3 +1,5 @@
+#Dolev Dahan
+#Ronel Davidov
 import os
 from PIL import Image
 import torch

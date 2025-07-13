@@ -1,3 +1,5 @@
+#Dolev Dahan
+#Ronel Davidov
 import torch
 from Vanila_models import GeneratorResNet, Discriminator
 

@@ -37,20 +37,6 @@ focused on unpaired image translation from photographs to Monet-style paintings.
 <div align="center">
   <img src="images/datasetMONET_PHOTO.jpg" alt="Dataset Overview" width="600"/>
 </div>
-
-## 🗂️ Dataset
-
-| Class  | Count | Type | Size    |
-|--------|-------|------|---------|
-| Photo  | 7,038 | RGB  | 256×256 |
-| Monet  | 300   | RGB  | 256×256 |
-
-- **Training set**: 200 random images from each class (with seeds 42, 123, 2025)
-- **Test set**: 893 Monet paintings from [TFDS Monet Dataset](https://www.kaggle.com/datasets/dimitreoliveira/monet-paintings-jpg-berkeley)
-<div align="center">
-  <img src="images/datasetMONET_PHOTO.jpg" alt="Generator Architecture" width="600"/>
-</div>
-
 ---
 ## 📌 Project Overview
 

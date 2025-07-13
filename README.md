@@ -67,6 +67,41 @@ and introduces a **PatchNCE contrastive loss** to enforce semantic correspondenc
 
 We used a **ResNet-based Generator** and a **Patch-level Feature Extractor** as part of the contrastive loss computation.
 
+
+---
+
+## 🖼️ Generated Images
+
+Here are the generated Monet-style images for both models across different random seeds:
+
+### 🔹 Model 1 – Generated Images
+- [Seed 42](https://drive.google.com/drive/folders/1XuNJnoxluw2PhiRhzXXnUqWDxqA--uZw?usp=sharing)
+- [Seed 123](https://drive.google.com/drive/folders/12IY4SbD-p7M9a1R6Wi3nVeIEhA2mUfF0)
+- [Seed 2025](https://drive.google.com/drive/folders/1aldg_d-P6494W1AJRKosmTrjh5-sgyTU)
+
+### 🔸 Model 2 – Generated Images
+- [Seed 42](https://drive.google.com/drive/folders/1tTA_AQvXlsuoqm8ouDR6jOXIegdHUC7u)
+- [Seed 123](https://drive.google.com/drive/folders/1l7nxfBNGLysXv_X6LYcY9BvQ-9jAOvma)
+- [Seed 2025](https://drive.google.com/drive/folders/1_R7GLxuTcfAcCcB3H3Ad8JJM9e_2V7sK)
+
+---
+
+## 💾 Download Pre-trained Weights
+
+You can download the pre-trained model checkpoints for both Model 1 and Model 2 below:
+
+### 🔹 Model 1 – Pre-trained Weights
+- [Seed 42](https://drive.google.com/file/d/1qxm1GGGF-FXJ0NJf6dlg6eYO7K6_MWX9/view?usp=sharing)
+- [Seed 123](https://drive.google.com/file/d/1EJkXs5j7CBzsVvWluo_xUGFStbTMF9_A/view?usp=sharing)
+- [Seed 2025](https://drive.google.com/file/d/1W4FLw_I8Ha1dgcZihQcERy20xADDWLhN/view?usp=sharing)
+
+### 🔸 Model 2 – Pre-trained Weights
+- [Seed 42](https://drive.google.com/file/d/19i4ZTN3BfcCk-D3-XseiAmUXZ_kFtqSW/view?usp=sharing)
+- [Seed 123](https://drive.google.com/file/d/1mknQxruzqiCzI-piM9aFbY24n2mX6ftd/view)
+- [Seed 2025](https://drive.google.com/file/d/1uJKwX2Wzzmk9gARsDuO2ZXLy0F_1OIYB/view?usp=sharing)
+
+---
+
 ### 🖼️ Architecture Overview
 
 #### 1. **Generator (G)**

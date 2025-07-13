@@ -81,8 +81,8 @@ Here are the generated Monet-style images for both models across different rando
 
 ### 🔸 Model 2 – Generated Images
 - [Seed 42](https://drive.google.com/drive/folders/1tTA_AQvXlsuoqm8ouDR6jOXIegdHUC7u)
-- [Seed 123](https://drive.google.com/drive/folders/1l7nxfBNGLysXv_X6LYcY9BvQ-9jAOvma)
-- [Seed 2025](https://drive.google.com/drive/folders/1_R7GLxuTcfAcCcB3H3Ad8JJM9e_2V7sK)
+- [Seed 123](https://drive.google.com/drive/folders/1JioM3EyEPU_CEb28p6a0GkqBp70T8IH2)
+- [Seed 2025](https://drive.google.com/drive/folders/1ChjS3u7FerK64CL_nXxY9eNQDU6lYa5c)
 
 ---
 
@@ -96,9 +96,9 @@ You can download the pre-trained model checkpoints for both Model 1 and Model 2 
 - [Seed 2025](https://drive.google.com/file/d/1W4FLw_I8Ha1dgcZihQcERy20xADDWLhN/view?usp=sharing)
 
 ### 🔸 Model 2 – Pre-trained Weights
-- [Seed 42](https://drive.google.com/file/d/19i4ZTN3BfcCk-D3-XseiAmUXZ_kFtqSW/view?usp=sharing)
+- [Seed 42](https://drive.google.com/file/d/19i4ZTN3BfcCk-D3-XseiAmUXZ_kFtqSW/view)
 - [Seed 123](https://drive.google.com/file/d/1mknQxruzqiCzI-piM9aFbY24n2mX6ftd/view)
-- [Seed 2025](https://drive.google.com/file/d/1uJKwX2Wzzmk9gARsDuO2ZXLy0F_1OIYB/view?usp=sharing)
+- [Seed 2025](https://drive.google.com/file/d/1uJKwX2Wzzmk9gARsDuO2ZXLy0F_1OIYB/view)
 
 ---
 

@@ -24,8 +24,9 @@ focused on unpaired image translation from photographs to Monet-style paintings.
 - **Training set**: 200 random images from each class (with seeds 42, 123, 2025)
 - **Test set**: 893 Monet paintings from [TFDS Monet Dataset](https://www.kaggle.com/datasets/dimitreoliveira/monet-paintings-jpg-berkeley)
 <div align="center">
-  <img src="images/dataset.jpg" alt="Generator Architecture" width="600"/>
+  <img src="images/datasetMONET_PHOTO.jpg" alt="Generator Architecture" width="600"/>
 </div>
+
 ---
 ## 📌 Project Overview
 
@@ -83,7 +84,7 @@ $$G_{Loss} = \lambda_{GAN} \cdot GAN_{Loss} + \lambda_{NCE} \cdot NCE_{Loss}$$
 <div align="center">
   <img src="images/patchNCEIMAGE.png" alt="Generator Architecture" width="600"/>
 </div>
-
+<br>
 <div align="center">
   <strong>GAN Loss:</strong>
 </div>
@@ -234,9 +235,23 @@ After training, we loaded the trained generator and used it to generate Monet-st
 
 ```python
 from test import load_trained_generator
+from generate_images_v2 import generate_images
+
+# Define the same Namespace used during training
+TestOpt = Namespace(
+    name='Model2_Train_seed42',
+    dataroot='./I-m-Something-of-a-Painter-Myself/data',
+    netG='resnet_15blocks',
+    gpu_ids=[0],
+    isTrain=False,
+    direction='BtoA',
+    input_nc=3,
+    output_nc=3,
+    # Add any other required fields from training
+)
 
 checkpoint_path = "./I-m-Something-of-a-Painter-Myself/checkpoints/Model2_Train_seed42/latest_net_G_42.pth"
-net_G = load_trained_generator(TrainOpt, checkpoint_path, device='cuda')
+net_G = load_trained_generator(TestOpt, checkpoint_path, device='cuda')
 
 generate_images(
     net_G,

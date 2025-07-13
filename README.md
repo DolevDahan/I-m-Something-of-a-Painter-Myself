@@ -13,6 +13,30 @@ focused on unpaired image translation from photographs to Monet-style paintings.
 - Achieving both realism and semantic preservation
 
 ---
+## 🗂️ Dataset
+
+| Class  | Count | Type | Size    |
+|--------|-------|------|---------|
+| Photo  | 7,038 | RGB  | 256×256 |
+| Monet  | 300   | RGB  | 256×256 |
+
+- **Training Set**:  
+  We randomly selected 200 images from each domain provided by the [I’m Something of a Painter Myself](https://www.kaggle.com/competitions/gan-getting-started/data):  
+  - **Domain A**: 200 Monet-style paintings from the `monet_jpg` folder (out of 300 total).  
+  - **Domain B**: 200 real-world photos from the `photo_jpg` folder (out of 7,038 total).  
+
+- **Image Translation**:  
+  All 7,038 photos from Domain B were translated to Monet-style using our generator to create the synthetic Domain A images.
+
+- **Evaluation Set**:  
+  To evaluate the model, we used a larger, external dataset containing 1,193 Monet paintings from [this TFDS Kaggle Dataset](https://www.kaggle.com/datasets/dimitreoliveira/monet-paintings-jpg-berkeley).  
+  Since this dataset includes the same 300 Monet images from the competition, we filtered those out. The remaining **893 unique Monet paintings** were used for **MiFID** evaluation against the generated images.
+
+  📁 [893 Monet Paintings for Evaluation (Google Drive)](https://drive.google.com/drive/folders/1ZQ1aYVl646MFR2DDu6v-Ef2HLqwgXbci)
+
+<div align="center">
+  <img src="images/datasetMONET_PHOTO.jpg" alt="Dataset Overview" width="600"/>
+</div>
 
 ## 🗂️ Dataset
 

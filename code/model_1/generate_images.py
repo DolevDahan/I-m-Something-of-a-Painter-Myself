@@ -1,5 +1,3 @@
-#Dolev Dahan
-#Ronel Davidov
 import torch
 from Vanila_models import GeneratorResNet
 from torchvision import transforms

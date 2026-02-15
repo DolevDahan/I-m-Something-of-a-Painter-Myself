@@ -1,5 +1,3 @@
-#Dolev Dahan
-#Ronel Davidov
 import os
 import matplotlib.pyplot as plt
 from PIL import Image

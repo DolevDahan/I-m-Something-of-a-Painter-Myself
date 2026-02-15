@@ -1,5 +1,3 @@
-#Dolev Dahan
-#Ronel Davidov
 import json
 import matplotlib.pyplot as plt
 

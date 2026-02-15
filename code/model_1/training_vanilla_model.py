@@ -1,5 +1,3 @@
-#Dolev Dahan
-#Ronel Davidov
 import random
 import numpy as np
 import torch

@@ -1,5 +1,3 @@
-#Dolev Dahan
-#Ronel Davidov
 import torch
 import networks
 from patchNCE import PatchNCELoss

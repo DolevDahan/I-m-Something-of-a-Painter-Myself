@@ -1,5 +1,4 @@
-#Dolev Dahan
-#Ronel Davidov
+
 import os
 import json
 

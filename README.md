@@ -31,7 +31,6 @@ focused on unpaired image translation from photographs to Monet-style paintings.
   To evaluate the model, we used a larger, external dataset containing 1,193 Monet paintings from [this TFDS Kaggle Dataset](https://www.kaggle.com/datasets/dimitreoliveira/monet-paintings-jpg-berkeley).  
   Since this dataset includes the same 300 Monet images from the competition, we filtered those out. The remaining **893 unique Monet paintings** were used for **MiFID** evaluation against the generated images.
 
-  📁 [893 Monet Paintings for Evaluation (Google Drive)](https://drive.google.com/drive/folders/1ZQ1aYVl646MFR2DDu6v-Ef2HLqwgXbci)
 
 <div align="center">
   <img src="images/datasetMONET_PHOTO.jpg" alt="Dataset Overview" width="600"/>
@@ -48,10 +47,10 @@ while preserving the original image structure.
 
 We implemented and evaluated two models:
 
-- **Model 1**: Vanilla CycleGAN – [[Paper](https://arxiv.org/abs/1703.10593)]
-- **Model 2**: Modified CycleGAN with PatchNCE (Contrastive Learning)
+- **Model 1**: CycleGAN (baseline) 
+- **Model 2**: CUT-inspired Contrastive Learning
 
-## 🧠 Model 1 – Vanilla CycleGAN
+## 🧠 Model 1: CycleGAN (baseline)
 
 - Two generators (`G_AB`, `G_BA`) and two discriminators (`D_A`, `D_B`)
 - Loss functions:
@@ -59,45 +58,14 @@ We implemented and evaluated two models:
   - **Identity loss**
   - **Adversarial loss (LSGAN)**
     
-## 🧠 Model 2 – Modified CycleGAN with PatchNCE (Contrastive Learning)
+## 🧠 Model 2: CUT-inspired (PatchNCE)
 
-Unlike the standard CycleGAN, our second model removes the cycle-consistency and identity losses  
-and introduces a **PatchNCE contrastive loss** to enforce semantic correspondence between the input photo and its generated Monet-style output.
-
-We used a **ResNet-based Generator** and a **Patch-level Feature Extractor** as part of the contrastive loss computation.
-
-
----
-
-## 🖼️ Generated Images
-
-Here are the generated Monet-style images for both models across different random seeds:
-
-### 🔹 Model 1 – Generated Images
-- [Seed 42](https://drive.google.com/drive/folders/1XuNJnoxluw2PhiRhzXXnUqWDxqA--uZw?usp=sharing)
-- [Seed 123](https://drive.google.com/drive/folders/12IY4SbD-p7M9a1R6Wi3nVeIEhA2mUfF0)
-- [Seed 2025](https://drive.google.com/drive/folders/1aldg_d-P6494W1AJRKosmTrjh5-sgyTU)
-
-### 🔸 Model 2 – Generated Images
-- [Seed 42](https://drive.google.com/drive/folders/1tTA_AQvXlsuoqm8ouDR6jOXIegdHUC7u)
-- [Seed 123](https://drive.google.com/drive/folders/1JioM3EyEPU_CEb28p6a0GkqBp70T8IH2)
-- [Seed 2025](https://drive.google.com/drive/folders/1ChjS3u7FerK64CL_nXxY9eNQDU6lYa5c)
-
----
-
-## 💾 Download Pre-trained Weights
-
-You can download the pre-trained model checkpoints for both Model 1 and Model 2 below:
-
-### 🔹 Model 1 – Pre-trained Weights
-- [Seed 42](https://drive.google.com/file/d/1qxm1GGGF-FXJ0NJf6dlg6eYO7K6_MWX9/view?usp=sharing)
-- [Seed 123](https://drive.google.com/file/d/1EJkXs5j7CBzsVvWluo_xUGFStbTMF9_A/view?usp=sharing)
-- [Seed 2025](https://drive.google.com/file/d/1W4FLw_I8Ha1dgcZihQcERy20xADDWLhN/view?usp=sharing)
-
-### 🔸 Model 2 – Pre-trained Weights
-- [Seed 42](https://drive.google.com/file/d/19i4ZTN3BfcCk-D3-XseiAmUXZ_kFtqSW/view)
-- [Seed 123](https://drive.google.com/file/d/1mknQxruzqiCzI-piM9aFbY24n2mX6ftd/view)
-- [Seed 2025](https://drive.google.com/file/d/1uJKwX2Wzzmk9gARsDuO2ZXLy0F_1OIYB/view)
+- One generator (`G`) and one discriminator (`D`)
+  - `G`: ResNet-based generator (`resnet_15blocks`) for **one-direction translation** Photo → Monet 
+  - `D`: PatchGAN discriminator that classifies local patches as real/fake (optimized with **LSGAN**)
+- Loss functions:
+  - **PatchNCE contrastive loss** 
+  - **Adversarial loss (LSGAN)**
 
 ---
 
@@ -128,7 +96,7 @@ $$G_{Loss} = \lambda_{GAN} \cdot GAN_{Loss} + \lambda_{NCE} \cdot NCE_{Loss}$$
   <strong>NCE Loss (Patch-wise):</strong>
 </div>
 <div align="center">
-  <img src="images/patchNCEIMAGE.png" alt="Generator Architecture" width="600"/>
+  <img src="images/NCE Loss Calculation Diagram.jpg" alt="Generator Architecture" width="600"/>
 </div>
 <br>
 <div align="center">
@@ -137,10 +105,43 @@ $$G_{Loss} = \lambda_{GAN} \cdot GAN_{Loss} + \lambda_{NCE} \cdot NCE_{Loss}$$
 <div align="center">
   <img src="images/ganloss_image.png" alt="Generator Architecture" width="600"/>
 </div>
+
+### ⚖️ Discriminator Loss (LSGAN)
+The discriminator learns to assign **1** to real Monet patches and **0** to generated patches using an **MSE (least-squares) loss**.
+
+<div align="center">
+  <img src="images/Discriminator Loss Calculation Diagram.jpg" alt="Discriminator loss diagram" width="650"/>
+</div>
+
 ---
 
+## 🖼️ Generated Images
+Below are sample outputs:
+
+<div align="center">
+  <img src="images/model 1 pos2.png" alt="Sample output from Model 2 (Photo → Monet)" width="900"/>
+  <p align="center"><b>Figure:</b> Example translation results from <b>Model 1</b> (Photo → Monet).</p>
+</div>
+
+<div align="center">
+  <img src="images/model 2 pos 1.png" alt="Sample output from Model 2 (Photo → Monet)" width="900"/>
+  <p align="center"><b>Figure:</b> Example translation results from <b>Model 2</b> (Photo → Monet).</p>
+</div>
 
 
+Here are the generated Monet-style images for the both models across different random seeds:
+
+### 🔹 Model 1 – Generated Images
+- [Seed 42](https://drive.google.com/drive/folders/1_s9-6S6_qBnpH2cPzoJ2plWWtMaAcau1?usp=sharing)
+- [Seed 123](https://drive.google.com/drive/folders/18rueHVb3RxCAJevgs0fFvwYbwDSmkQkL?usp=sharing)
+- [Seed 2025](https://drive.google.com/drive/folders/171lBz3PyoyMlTPbITDrLJPlIJA4Co-8d?usp=sharing)
+
+### 🔸 Model 2 – Generated Images
+- [Seed 42](https://drive.google.com/drive/folders/1tb9bTwr2CNaPjaT0SZskfo5HD4leqkpL?usp=sharing)
+- [Seed 123](https://drive.google.com/drive/folders/1r04UaMBJSEaQOkLg4D34FAXLCgXZvs1Z?usp=sharing)
+- [Seed 2025](https://drive.google.com/drive/folders/1npjEDUPSq0Sw1lAPpeFXuOZAS4RyrdO4?usp=sharing)
+
+---
 ## ⚙️ Installation & Setup
 
 #### 📓 Example Notebook  
@@ -151,7 +152,7 @@ This repository includes a ready-to-run Jupyter notebook demonstrating:
 - 📊 MiFID evaluation for perceptual quality assessment  
 
 You can try it out here:  
-🔗 [notebooks/main_notebook.ipynb](https://github.com/DolevDahan/I-m-Something-of-a-Painter-Myself/blob/main/notebooks/main_notebook.ipynb)
+🔗 [notebooks/main_notebook.ipynb](https://github.com/RonelDavidov/I-m-Something-of-a-Painter-Myself/blob/main/notebooks/main_notebook_I_m_Something_of_a_Painter_Myself.ipynb)
 
 
 ### 1. 📥 Clone the repository
@@ -200,11 +201,11 @@ I-m-Something-of-a-Painter-Myself/
 ## 🧪 Training & Testing
 
 Model training and testing were performed **directly using Python functions**, without calling shell scripts.  
-We trained both models (CycleGAN and PatchNCE) using fixed seeds for reproducibility.
+We trained both models (CycleGAN and CUT) using fixed seeds for reproducibility.
 
 ---
 
-### ✅ Training Model 1: Vanilla CycleGAN
+### ✅ Training Model 1: CycleGAN 
 
 Training was done using the function `train_cycle_gan()` from the `training_vanilla_model` module.
 
@@ -247,7 +248,7 @@ generate_images(
 
 ---
 
-### ✨ Training Model 2: CycleGAN and PatchNCE based
+### ✨ Training Model 2: CUT-inspired 
 
 Training was performed by configuring a `Namespace` object with all hyperparameters and passing it to the `train()` function:
 
@@ -326,8 +327,8 @@ output/
 ├── generated_images_model_2_seed_42/
 ├── ...
 ```
-
 ---
+
 ## 📊 Evaluation – MiFID (Memorization-informed FID)
 
 To assess the perceptual quality of the generated Monet-style images,  
@@ -376,23 +377,10 @@ The lower the MiFID, the better the perceptual similarity to real Monet images.
 
 | Model        | Mean MiFID | Std. Deviation |
 |--------------|------------|----------------|
-| Vanilla      | 91.537     | 3.456          |
-| PatchNCE     | 78.448     | 2.987          |
+| CycleGAN      | 91.537     | 3.456          |
+| CUT      | 78.448     | 2.987          |
 
-> These scores indicate that the contrastive model (Model 2) significantly outperforms the vanilla CycleGAN in terms of perceptual quality and generalization.
-
----
-
-## 📊 Evaluation – MiFID
-
-We use **MiFID** (Memorization-informed FID), which penalizes overfitting by comparing generated Monet images with unseen Monet test data.
-
-| Model    | Mean MiFID | Std. Deviation |
-|----------|------------|----------------|
-| Vanilla  | 91.537     | 3.456          |
-| PatchNCE | 78.448     | 2.987          |
-
----
+> These scores indicate that the CUT model (Model 2) significantly outperforms the CycleGAN in terms of perceptual quality and generalization.
 
 ## 🧪 Ablation Study – PatchNCE Weight (λ)
 
@@ -413,22 +401,20 @@ Here is an example of the output generated by our model:
 <div align="center">
   <img src="images/positive_performance_model2.png" alt="Generator Architecture" width="600"/>
 </div>
+
 ---
 
 ## 📂 References
 
 - [CycleGAN Paper](https://arxiv.org/abs/1703.10593)
-- [Contrastive Learning of Visual Representations](https://arxiv.org/abs/2002.05709)
-- [Adaptive Supervised PatchNCE Loss](https://arxiv.org/abs/2303.06193)
 - [Contrastive Unpaired Translation](https://arxiv.org/abs/2007.15651)
-- [MiFID Evaluation Metric](https://www.kaggle.com/competitions/gan-getting-started/overview/evaluation)
-- [TFDS Monet Dataset](https://www.kaggle.com/datasets/dimitreoliveira/monet-paintings-jpg-berkeley)
-
 ---
 
 ## 👥 Authors
 
 - **Dolev Dahan**
 - **Ronel Davidov**
+- **Shoham Hamias**
+- **Tal Dayan**
 
-📫 Contact us: `dahandol@post.bgu.ac.il`, `davidovr@post.bgu.ac.il`
+ 📫 Contact us: `dahandol@post.bgu.ac.il`, `davidovr@post.bgu.ac.il`, `hamiass@post.bgu.ac.il`, `dayta@post.bgu.ac.il` 
